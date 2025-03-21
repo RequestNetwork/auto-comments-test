@@ -1,0 +1,137 @@
+name: Integration Test for PR Automated Comments
+
+on:
+  # Trigger on pull requests to test actual PR comment behavior
+  pull_request:
+    types: [opened, ready_for_review, closed]
+
+  # Manual trigger for testing different branches and scenarios
+  workflow_dispatch:
+    inputs:
+      workflow_ref:
+        description: 'Branch or tag of the auto-comments repo to test (e.g., main, feature-branch, v1)'
+        required: true
+        default: 'main'
+        type: string
+      test_comment_type:
+        description: 'Which comment type to test'
+        required: true
+        type: choice
+        options:
+          - first_pr
+          - ready_for_review
+          - merged
+
+jobs:
+  # For real PRs - call the actual workflow
+  real-pr-comments:
+    name: Real PR Comments Test
+    if: github.event_name == 'pull_request'
+    uses: RequestNetwork/auto-comments/.github/workflows/pr-auto-comments.yml@main
+    with:
+      org_name: "RequestNetwork"
+      additional_internal_users: "integration-test-bot"
+      first_pr_comment: |
+        # [TEST] Welcome to your first contribution!
+
+        Thank you @{{username}} for submitting your first pull request to the {{repository}} repository.
+
+        This is a test of the automated comment system. This comment was triggered by the integration test workflow.
+
+        Repository: {{repository}}
+        Organization: {{org}}
+
+      ready_for_review_comment: |
+        # [TEST] PR Ready for Review
+
+        This PR from @{{username}} is now ready for review in the {{repository}} repository.
+
+        This is a test of the automated comment system. This comment was triggered by the integration test workflow.
+
+      merged_pr_comment: |
+        # [TEST] PR Successfully Merged!
+
+        Congratulations @{{username}}! Your PR to {{repository}} has been merged.
+
+        This is a test of the automated comment system. This comment was triggered by the integration test workflow.
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+
+  # For manual testing - simulate PR events
+  manual-test:
+    name: Manual Test
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create test issue
+        id: create-issue
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const commentType = '${{ github.event.inputs.test_comment_type }}';
+            const workflowRef = '${{ github.event.inputs.workflow_ref }}';
+
+            // Create a test issue to track this test run
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Integration Test: ${commentType} comment from ${workflowRef}`,
+              body: `This is an automatically created issue to test the PR automated comments workflow.
+
+              Testing branch/tag: \`${workflowRef}\`
+              Testing comment type: \`${commentType}\`
+
+              The test will post the response comment below.`
+            });
+
+            console.log(`Created test issue #${issue.data.number}`);
+            return { issue_number: issue.data.number };
+
+      - name: Call workflow with simulated PR opened event
+        if: github.event.inputs.test_comment_type == 'first_pr'
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: PR Automated Comments
+          repo: RequestNetwork/auto-comments
+          ref: ${{ github.event.inputs.workflow_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          inputs: |
+            {
+              "event_type": "opened",
+              "issue_number": "${{ steps.create-issue.outputs.issue_number }}"
+            }
+
+      - name: Call workflow with simulated ready for review event
+        if: github.event.inputs.test_comment_type == 'ready_for_review'
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: PR Automated Comments
+          repo: RequestNetwork/auto-comments
+          ref: ${{ github.event.inputs.workflow_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          inputs: |
+            {
+              "event_type": "ready_for_review",
+              "issue_number": "${{ steps.create-issue.outputs.issue_number }}"
+            }
+
+      - name: Call workflow with simulated PR merged event
+        if: github.event.inputs.test_comment_type == 'merged'
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: PR Automated Comments
+          repo: RequestNetwork/auto-comments
+          ref: ${{ github.event.inputs.workflow_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          inputs: |
+            {
+              "event_type": "merged",
+              "issue_number": "${{ steps.create-issue.outputs.issue_number }}"
+            }
+
+      - name: Wait for workflow to complete
+        run: |
+          echo "Waiting for the workflow to complete..."
+          sleep 20
+          echo "Test completed. Please check the issue #${{ fromJson(steps.create-issue.outputs.result).issue_number }} for results."
