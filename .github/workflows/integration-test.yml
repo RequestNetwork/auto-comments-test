@@ -88,47 +88,90 @@ jobs:
             console.log(`Created test issue #${issue.data.number}`);
             return { issue_number: issue.data.number };
 
-      - name: Call workflow with simulated PR opened event
+      - name: Test First PR Comment
         if: github.event.inputs.test_comment_type == 'first_pr'
-        uses: benc-uk/workflow-dispatch@v1
+        uses: actions/github-script@v6
         with:
-          workflow: PR Automated Comments
-          repo: RequestNetwork/auto-comments
-          ref: ${{ github.event.inputs.workflow_ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          inputs: |
-            {
-              "event_type": "opened",
-              "issue_number": "${{ steps.create-issue.outputs.issue_number }}"
-            }
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issueNumber = JSON.parse('${{ steps.create-issue.outputs.result }}').issue_number;
 
-      - name: Call workflow with simulated ready for review event
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: `Calling workflow for First PR comment test with ref: ${{ github.event.inputs.workflow_ref }}`
+            });
+
+            // Call the workflow
+            await github.rest.actions.createWorkflowDispatch({
+              owner: 'RequestNetwork',
+              repo: 'auto-comments',
+              workflow_id: 'pr-auto-comments.yml',
+              ref: '${{ github.event.inputs.workflow_ref }}',
+              inputs: {
+                org_name: 'RequestNetwork',
+                event_type: 'opened',
+                is_first_pr: 'true',
+                issue_number: issueNumber.toString()
+              }
+            });
+
+      - name: Test Ready for Review Comment
         if: github.event.inputs.test_comment_type == 'ready_for_review'
-        uses: benc-uk/workflow-dispatch@v1
+        uses: actions/github-script@v6
         with:
-          workflow: PR Automated Comments
-          repo: RequestNetwork/auto-comments
-          ref: ${{ github.event.inputs.workflow_ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          inputs: |
-            {
-              "event_type": "ready_for_review",
-              "issue_number": "${{ steps.create-issue.outputs.issue_number }}"
-            }
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issueNumber = JSON.parse('${{ steps.create-issue.outputs.result }}').issue_number;
 
-      - name: Call workflow with simulated PR merged event
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: `Calling workflow for Ready for Review comment test with ref: ${{ github.event.inputs.workflow_ref }}`
+            });
+
+            // Call the workflow
+            await github.rest.actions.createWorkflowDispatch({
+              owner: 'RequestNetwork',
+              repo: 'auto-comments',
+              workflow_id: 'pr-auto-comments.yml',
+              ref: '${{ github.event.inputs.workflow_ref }}',
+              inputs: {
+                org_name: 'RequestNetwork',
+                event_type: 'ready_for_review',
+                issue_number: issueNumber.toString()
+              }
+            });
+
+      - name: Test Merged PR Comment
         if: github.event.inputs.test_comment_type == 'merged'
-        uses: benc-uk/workflow-dispatch@v1
+        uses: actions/github-script@v6
         with:
-          workflow: PR Automated Comments
-          repo: RequestNetwork/auto-comments
-          ref: ${{ github.event.inputs.workflow_ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          inputs: |
-            {
-              "event_type": "merged",
-              "issue_number": "${{ steps.create-issue.outputs.issue_number }}"
-            }
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issueNumber = JSON.parse('${{ steps.create-issue.outputs.result }}').issue_number;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: `Calling workflow for Merged PR comment test with ref: ${{ github.event.inputs.workflow_ref }}`
+            });
+
+            // Call the workflow
+            await github.rest.actions.createWorkflowDispatch({
+              owner: 'RequestNetwork',
+              repo: 'auto-comments',
+              workflow_id: 'pr-auto-comments.yml',
+              ref: '${{ github.event.inputs.workflow_ref }}',
+              inputs: {
+                org_name: 'RequestNetwork',
+                event_type: 'merged',
+                issue_number: issueNumber.toString()
+              }
+            });
 
       - name: Wait for workflow to complete
         run: |
