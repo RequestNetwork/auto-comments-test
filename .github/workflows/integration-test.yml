@@ -55,7 +55,7 @@ jobs:
 
         This is a test of the automated comment system. This comment was triggered by the integration test workflow.
     secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
+      token: ${{ secrets.GH_PAT }}
 
   # For manual testing - simulate PR events
   manual-test:
@@ -67,7 +67,7 @@ jobs:
         id: create-issue
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GH_PAT }}
           script: |
             const commentType = '${{ github.event.inputs.test_comment_type }}';
             const workflowRef = '${{ github.event.inputs.workflow_ref }}';
@@ -92,7 +92,7 @@ jobs:
         if: github.event.inputs.test_comment_type == 'first_pr'
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GH_PAT }}
           script: |
             const issueNumber = JSON.parse('${{ steps.create-issue.outputs.result }}').issue_number;
 
@@ -121,7 +121,7 @@ jobs:
         if: github.event.inputs.test_comment_type == 'ready_for_review'
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GH_PAT }}
           script: |
             const issueNumber = JSON.parse('${{ steps.create-issue.outputs.result }}').issue_number;
 
@@ -149,7 +149,7 @@ jobs:
         if: github.event.inputs.test_comment_type == 'merged'
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GH_PAT }}
           script: |
             const issueNumber = JSON.parse('${{ steps.create-issue.outputs.result }}').issue_number;
 
