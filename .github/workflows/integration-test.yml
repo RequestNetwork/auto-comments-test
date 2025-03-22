@@ -33,14 +33,6 @@ jobs:
         2. Second item
         3. Third item
 
-        ### Code Blocks
-
-        ```
-        def hello_contributor():
-            print("Thanks for contributing!")
-            return "We appreciate your help!"
-        ```
-
         ### Blockquotes
         > This is a blockquote to demonstrate markdown formatting
         > It can span multiple lines
@@ -82,15 +74,6 @@ jobs:
         ### Links
         [Visit Request Network](https://request.network/)
 
-        ### Code Block Example
-
-        ```
-        function testFunction() {
-          console.log("Testing code blocks");
-          return true;
-        }
-        ```
-
         ### Table Example
         | Feature | Status |
         |---------|--------|
@@ -128,12 +111,6 @@ jobs:
         <summary>Click to see more information</summary>
 
         This is a collapsed section containing additional information that's hidden by default.
-
-        ```
-        test:
-          name: Integration test
-          runs-on: ubuntu-latest
-        ```
         </details>
 
         ### Image Reference
