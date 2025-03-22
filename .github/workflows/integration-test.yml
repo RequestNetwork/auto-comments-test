@@ -118,4 +118,4 @@ jobs:
 
         Thank you for contributing to our project! This test comment was triggered by the integration test workflow.
     secrets:
-      token: ${{ secrets.GH_PAT }}
+      token: ${{ secrets.GH_PAT_AUTO_COMMENTS }}
