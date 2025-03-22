@@ -5,8 +5,9 @@ on:
     types: [opened, ready_for_review, closed]
 
 jobs:
-  pr-comments:
-    name: PR Comments
+  # Test with custom test messages
+  pr-comments-custom:
+    name: PR Comments - Custom Messages
     uses: RequestNetwork/auto-comments/.github/workflows/pr-auto-comments.yml@main
     with:
       org_name: "RequestNetwork"
@@ -117,5 +118,15 @@ jobs:
         ![GitHub Logo](https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png)
 
         Thank you for contributing to our project! This test comment was triggered by the integration test workflow.
+    secrets:
+      token: ${{ secrets.GH_PAT_AUTO_COMMENTS }}
+
+  # Test using default messages
+  pr-comments-default:
+    name: PR Comments - Default Messages
+    uses: RequestNetwork/auto-comments/.github/workflows/pr-auto-comments.yml@main
+    with:
+      org_name: "RequestNetwork"
+      # Using default messages to verify they work correctly
     secrets:
       token: ${{ secrets.GH_PAT_AUTO_COMMENTS }}
