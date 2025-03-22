@@ -1,6 +1,6 @@
 # PR Auto-Comments Integration Tests
 
-This repository serves as an integration testing environment for the [auto-comments](https://github.com/RequestNetwork/auto-comments) reusable GitHub Actions workflow.
+This repository is an integration testing environment for the [auto-comments](https://github.com/RequestNetwork/auto-comments) reusable GitHub Actions workflow.
 
 ## Purpose
 
