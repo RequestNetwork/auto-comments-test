@@ -1,12 +1,12 @@
-name: Integration Test for PR Automated Comments
+name: Integration Test
 
 on:
   pull_request_target:
     types: [opened, ready_for_review, closed]
 
 jobs:
-  test-pr-comments:
-    name: Test PR Comments
+  pr-comments:
+    name: PR Comments
     uses: RequestNetwork/auto-comments/.github/workflows/pr-auto-comments.yml@main
     with:
       org_name: "RequestNetwork"
