@@ -27,7 +27,7 @@ The core functionality of the auto-comments workflow can only be properly tested
 3. Check that the first PR comment appears
 4. Have the same account create a second PR
 5. Verify that the first PR comment doesn't appear this time
-6. Mark the PR as ready for review (after creating as draft)
+6. Mark the PR as ready for review (after creating it as a draft)
 7. Verify the ready for review comment appears
 8. Merge the PR
 9. Verify the merged PR comment appears
