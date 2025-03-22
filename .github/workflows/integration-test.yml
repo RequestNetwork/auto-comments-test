@@ -11,27 +11,132 @@ jobs:
     with:
       org_name: "RequestNetwork"
       first_pr_comment: |
-        # [TEST] Welcome to your first contribution!
+        # [TEST] Welcome to your first contribution! :wave:
 
         Thank you @{{username}} for submitting your first pull request to the {{repository}} repository.
 
+        ## Variable Replacement Tests
+
+        - **Username**: {{username}}
+        - **Repository**: {{repository}}
+        - **Organization**: {{org}}
+
+        ## Markdown Feature Tests
+
+        ### Formatting Examples
+        This text is **bold**, this is *italic*, and this is ~~strikethrough~~.
+
+        ### Lists
+        1. First item
+           * Nested bullet
+           * Another nested bullet
+        2. Second item
+        3. Third item
+
+        ### Code Blocks
+        ```python
+        def hello_contributor():
+            print(f"Thanks for contributing to {{repository}}!")
+            return "We appreciate your help!"
+        ```
+
+        ### Blockquotes
+        > This is a blockquote to demonstrate markdown formatting
+        > It can span multiple lines
+
+        ### Tables
+        | Test | Result |
+        |------|--------|
+        | Variable substitution | Working |
+        | Markdown rendering | Working |
+        | Emoji support | :thumbsup: |
+
         This is a test of the automated comment system. This comment was triggered by the integration test workflow.
 
-        Repository: {{repository}}
-        Organization: {{org}}
-
       ready_for_review_comment: |
-        # [TEST] PR Ready for Review
+        # [TEST] PR Ready for Review :white_check_mark:
 
         This PR from @{{username}} is now ready for review in the {{repository}} repository.
 
-        This is a test of the automated comment system. This comment was triggered by the integration test workflow.
+        ## Variable Replacement Tests
+
+        - **Username**: {{username}}
+        - **Repository**: {{repository}}
+        - **Organization**: {{org}}
+
+        ## Markdown Feature Tests
+
+        ### Text Formatting
+        - Regular text
+        - **Bold text**
+        - *Italic text*
+        - ~~Strikethrough text~~
+
+        ### List Items
+        1. Numbered item 1
+        2. Numbered item 2
+           - Nested bullet point
+           - Another nested point
+
+        ### Links
+        [Visit Request Network](https://request.network/)
+
+        ### Code Block Example
+        ```javascript
+        function testFunction() {
+          console.log("Testing code blocks in PR comments");
+          return true;
+        }
+        ```
+
+        ### Table Example
+        | Feature | Status |
+        |---------|--------|
+        | Text replacement | ✅ |
+        | Markdown formatting | ✅ |
+
+        > This is a blockquote to test that formatting
+
+        This test comment was triggered by the integration test workflow :rocket:
 
       merged_pr_comment: |
-        # [TEST] PR Successfully Merged!
+        # [TEST] PR Successfully Merged! :tada:
 
-        Congratulations @{{username}}! Your PR to {{repository}} has been merged.
+        Congratulations @{{username}}! Your PR to the {{repository}} repository has been merged.
 
-        This is a test of the automated comment system. This comment was triggered by the integration test workflow.
+        ## Variable Replacement Tests
+
+        - **Username**: {{username}}
+        - **Repository**: {{repository}}
+        - **Organization**: {{org}}
+
+        ## Markdown Feature Tests
+
+        ### Emojis
+        :star: :rocket: :raised_hands: :100:
+
+        ### Task Lists
+        - [x] PR created
+        - [x] Code reviewed
+        - [x] Tests passed
+        - [x] PR merged
+
+        ### Collapsed Section
+        <details>
+        <summary>Click to see more information</summary>
+
+        This is a collapsed section containing additional information that's hidden by default.
+
+        ```yaml
+        test:
+          name: Integration test
+          runs-on: ubuntu-latest
+        ```
+        </details>
+
+        ### Image Reference
+        ![GitHub Logo](https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png)
+
+        Thank you for contributing to our project! This test comment was triggered by the integration test workflow.
     secrets:
       token: ${{ secrets.GH_PAT }}
