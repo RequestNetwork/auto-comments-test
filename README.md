@@ -6,59 +6,68 @@ This repository serves as an integration testing environment for the [auto-comme
 
 The `auto-comments` repository contains a reusable workflow that automatically posts comments on Pull Requests from external contributors. This test repository helps verify that the workflow functions correctly in real-world scenarios before changes are merged into the main workflow.
 
-## Test Workflows
+## Proper Testing Methodology
 
-### 1. Automatic PR Testing
+The core functionality of the auto-comments workflow can only be properly tested with real user accounts, as it relies on checking organization membership status. For comprehensive testing, you should:
 
-The repository includes an integration test workflow that runs automatically on Pull Requests:
+### Create a Testing Matrix
 
-- It's triggered by real PR events (opened, ready for review, closed/merged)
-- It calls the reusable workflow from the main repository
-- It uses test-specific comment messages that clearly indicate they're from a test
+| Test Case | User Type | PR Action | Expected Result |
+|-----------|-----------|-----------|-----------------|
+| 1 | Internal (org member) | Open PR | No comments |
+| 2 | External (non-member) | Open first PR | First PR comment appears |
+| 3 | External (non-member) | Open second PR | No first PR comment |
+| 4 | External (non-member) | Mark PR ready for review | Ready for review comment appears |
+| 5 | External (non-member) | Merge PR | Merged PR comment appears |
 
-This allows testing the workflow by simply creating PRs in this repository.
+### Test with a Real External Account
 
-### 2. Manual Testing
+1. Create or use a GitHub account that is **not** a member of the RequestNetwork organization
+2. Have this account create a PR to the auto-comments-test repository
+3. Check that the first PR comment appears
+4. Have the same account create a second PR
+5. Verify that the first PR comment doesn't appear this time
+6. Mark the PR as ready for review (after creating as draft)
+7. Verify the ready for review comment appears
+8. Merge the PR
+9. Verify the merged PR comment appears
 
-For testing specific branches or features, you can manually trigger the integration test:
+### Verify Variable Substitution
 
-1. Go to the Actions tab
-2. Select the "Integration Test for PR Automated Comments" workflow
-3. Click "Run workflow"
-4. Choose:
-   - Which branch/tag of the auto-comments repo to test
-   - Which comment type to test (first PR, ready for review, merged)
-5. The workflow will:
-   - Create a test issue
-   - Call the workflow with the specified parameters
-   - Show results in the issue comments
+In all comments, verify that:
+- `{{username}}` correctly shows the PR author's username
+- `{{repository}}` correctly shows "auto-comments-test"
+- `{{org}}` correctly shows "RequestNetwork"
 
-## Contributing
+## How This Repository Works
 
-When making changes to the `auto-comments` workflow:
+This repository includes a simplified integration-test.yml workflow that:
 
-1. Create a feature branch in the main repository
-2. Test your changes using this repository
-3. Once verified, merge your changes to the main branch
+1. Is triggered by actual pull request events (opened, ready for review, closed)
+2. Calls the reusable workflow from the auto-comments repository
+3. Provides test-specific comment messages clearly marked with "[TEST]"
 
-## Testing Strategies
+By using real pull requests, we can accurately test the workflow's core functionality:
+- Organization membership detection
+- First PR detection
+- Event-specific comments
+- Variable substitution
 
-### Testing a Feature Branch
+## Best Practices for Testing Changes
 
-To test changes before merging to main:
+1. **Local Validation**: First validate workflow syntax locally
+2. **Real User Testing**: Have a non-org member create a PR to verify the full functionality
+3. **Review Results**: Check that comments appear correctly and variables are substituted properly
 
-1. Push your changes to a feature branch in the auto-comments repository
-2. Run the manual test workflow in this repository
-3. Select your feature branch in the "workflow_ref" input
-4. Verify the workflow behaves as expected
+Remember: The most crucial aspects (first-PR detection, org membership detection) can only be properly verified with actual GitHub accounts that are not members of your organization.
 
-### Testing Edge Cases
+## Creating a Test Account
 
-You can test specific scenarios by:
-
-1. Creating PRs with different characteristics in this repository
-2. Transitioning PRs through different states (draft, ready, merged)
-3. Using different authors (org members vs. external contributors)
+For thorough testing, consider:
+1. Creating a dedicated testing GitHub account
+2. Keeping it outside your organization
+3. Using it exclusively for testing external contributor experiences
+4. Documenting test results with screenshots
 
 ## License
 
