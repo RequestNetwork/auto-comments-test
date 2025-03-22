@@ -34,9 +34,10 @@ jobs:
         3. Third item
 
         ### Code Blocks
-        ```python
+
+        ```
         def hello_contributor():
-            print(f"Thanks for contributing to {{repository}}!")
+            print("Thanks for contributing!")
             return "We appreciate your help!"
         ```
 
@@ -82,9 +83,10 @@ jobs:
         [Visit Request Network](https://request.network/)
 
         ### Code Block Example
-        ```javascript
+
+        ```
         function testFunction() {
-          console.log("Testing code blocks in PR comments");
+          console.log("Testing code blocks");
           return true;
         }
         ```
@@ -127,7 +129,7 @@ jobs:
 
         This is a collapsed section containing additional information that's hidden by default.
 
-        ```yaml
+        ```
         test:
           name: Integration test
           runs-on: ubuntu-latest
